@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="testRule" class="com.alipay.zdal.rule.config.beans.AppRule">
+        <property name="masterRule" ref="testRWRule"/>
+        <!--<property name="readwriteRule" ref="testRWRule"/>-->
+    </bean>
+
+    <bean id="testRWRule" class="com.alipay.zdal.rule.config.beans.ShardRule">
+        <property name="tableRules">
+            <map>
+                <entry key="t_city" value-ref="userTableRule"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="userTableRule" class="com.alipay.zdal.rule.config.beans.TableRule" init-method="init">
+        <property name="tbSuffix" value="resetForEachDB:[_00-_11]"/>
+        <property name="dbIndexes" value="master_00,master_01,master_02,master_03"/>
+        <!-- 分库解析方法 -->
+        <property name="dbRuleArray">
+            <list>
+                <value>
+                    return com.alipay.zdal.demo.util.ZdalRuleParser.parserDbIndex(#id#);
+                </value>
+            </list>
+        </property>
+        <!-- 分表解析方法 -->
+        <property name="tbRuleArray">
+            <list>
+                <value>
+                    return com.alipay.zdal.demo.util.ZdalRuleParser.parserTbIndex(#id#);
+                </value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

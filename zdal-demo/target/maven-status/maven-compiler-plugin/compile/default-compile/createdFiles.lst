@@ -1,0 +1,5 @@
+com/alipay/zdal/demo/biz/CityService.class
+com/alipay/zdal/demo/Application.class
+com/alipay/zdal/demo/util/ZdalRuleParser.class
+com/alipay/zdal/demo/mapper/CityMapper.class
+com/alipay/zdal/demo/model/City.class

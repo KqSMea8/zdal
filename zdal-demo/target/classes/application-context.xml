@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+    <!--  -->
+    <context:annotation-config />
+    <context:component-scan base-package="com.alipay.zdal.demo"/>
+
+    <!-- 分库分表数据源-->
+    <bean id="dataSource" class="com.alipay.zdal.client.jdbc.ZdalDataSource" init-method="init">
+        <property name="appName" value="zdal"/>
+        <property name="appDsName" value="ShardDataSource"/>
+        <property name="dbmode" value="dev"/>
+        <property name="configPath" value="./config"/>
+        <!--<property name="configPath" value="classpath*:mapper/*.xml"/>-->
+    </bean>
+    
+     <!-- mybatis相关配置，绑定数据源 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 别名 -->
+        <property name="typeAliasesPackage" value="com.alipay.zdal.demo.model"/>
+        <!-- sql映射文件路径 -->
+        <property name="mapperLocations" value="classpath*:cn/sunline/zdal/demo/mapper/*Mapper.xml"/>
+    </bean>
+    
+    <!-- 自动扫描对象关系映射 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!-- 指定要自动扫描接口的基础包，实现接口 -->
+        <property name="basePackage" value="com.alipay.zdal.demo.mapper"></property>
+    </bean>
+</beans>
